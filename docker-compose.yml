@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  manipulator:
+    build:
+      context: ./manipulator
+      dockerfile: Dockerfile
+    container_name: manipulator
+    ports:
+      - 32007:32007
+      - 32008:32008
+    networks:
+      - app_network
+
+  controller:
+    build:
+      context: ./controller
+      dockerfile: Dockerfile
+    container_name: controller
+    ports:
+      - 5000:5000
+    depends_on:
+      - manipulator
+    networks:
+      - app_network
+  
+  sensor:
+    build:
+      context: ./sensor
+      dockerfile: Dockerfile
+    container_name: sensor
+    depends_on:
+      - controller
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+    
